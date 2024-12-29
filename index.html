@@ -122,6 +122,30 @@
             background-color: #007bff;
             font-size: 1em;
         }
+
+        .show-password {
+            position: absolute;
+            right: 20px;
+            top: 38px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        /* Animasi */
+        .fade {
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        .fade.show {
+            opacity: 1;
+        }
+
+        #ucapan {
+            font-size: 1.2em;
+            color: green;
+        }
+
     </style>
 </head>
 <body>
@@ -130,9 +154,17 @@
     <div class="login-form" id="loginForm">
         <h1>Login</h1>
         <input type="text" id="username" placeholder="Username" required><br>
-        <input type="password" id="password" placeholder="Password" required><br>
+        <div style="position: relative;">
+            <input type="password" id="password" placeholder="Password" required><br>
+            <span class="show-password" onclick="togglePassword()">Tampilkan Sandi</span>
+        </div>
         <button onclick="login()">Login</button>
         <p id="errorMessage" style="color: red;"></p>
+    </div>
+
+    <!-- Ucapan Selamat Datang (Hidden initially) -->
+    <div id="ucapan" class="fade" style="display: none;">
+        <h1>Selamat Datang admin judi pendosa 🎉</h1>
     </div>
 
     <!-- Rekap Form (Hidden initially) -->
@@ -147,15 +179,45 @@
     </div>
 
     <script>
+        function togglePassword() {
+            var passwordField = document.getElementById("password");
+            var passwordText = document.querySelector(".show-password");
+
+            if (passwordField.type === "password") {
+                passwordField.type = "text";
+                passwordText.innerText = "Sembunyikan Sandi";  // Ubah teks saat kata sandi terlihat
+            } else {
+                passwordField.type = "password";
+                passwordText.innerText = "Tampilkan Sandi";  // Kembalikan teks saat kata sandi tersembunyi
+            }
+        }
+
         function login() {
             var username = document.getElementById("username").value;
             var password = document.getElementById("password").value;
             var errorMessage = document.getElementById("errorMessage");
 
-            // Simulasi login
-            if (username === "rekap" && password === "kb123") {
+            // Validasi input
+            if (!username && !password) {
+                errorMessage.innerText = "Harap masukkan username dan kata sandi.";  // Keduanya kosong
+            } else if (!username) {
+                errorMessage.innerText = "Harap masukkan username.";  // Username kosong
+            } else if (!password) {
+                errorMessage.innerText = "Harap masukkan kata sandi.";  // Kata sandi kosong
+            } else if (username === "rekap" && password === "kb123") {
                 document.getElementById("loginForm").style.display = "none";
-                document.getElementById("rekapForm").style.display = "block";
+                var ucapan = document.getElementById("ucapan");
+                ucapan.style.display = "block";
+                setTimeout(function() {
+                    ucapan.classList.add("show"); // Menampilkan ucapan
+                }, 100);
+
+                // Setelah animasi selesai, tampilkan halaman kedua
+                setTimeout(function() {
+                    document.getElementById("rekapForm").style.display = "block";
+                    ucapan.classList.remove("show"); // Menghilangkan ucapan secara perlahan
+                }, 2000);
+
                 errorMessage.innerText = "";
             } else {
                 errorMessage.innerText = "Username atau password salah. 😢";
